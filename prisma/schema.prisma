@@ -1,0 +1,84 @@
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// MODELS P0 - Doctor Auto API
+// ============================================
+
+model User {
+  id        String   @id @default(cuid( ))
+  email     String   @unique
+  name      String?
+  role      String   @default("USER") // USER, ADMIN, MECANICO
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agendamentos Agendamento[]
+  orcamentos   Orcamento[]
+  ordensServico OrdemServico[]
+
+  @@map("users")
+}
+
+model Agendamento {
+  id          String   @id @default(cuid())
+  clienteId   String
+  cliente     User     @relation(fields: [clienteId], references: [id])
+  
+  dataHora    DateTime
+  servico     String
+  veiculo     String?
+  observacoes String?
+  status      String   @default("PENDENTE") // PENDENTE, CONFIRMADO, CANCELADO, CONCLUIDO
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("agendamentos")
+}
+
+model Orcamento {
+  id          String   @id @default(cuid())
+  clienteId   String
+  cliente     User     @relation(fields: [clienteId], references: [id])
+  
+  veiculo     String
+  servicos    String[] // Array de serviços
+  valorTotal  Float
+  validade    DateTime
+  status      String   @default("PENDENTE") // PENDENTE, APROVADO, REJEITADO
+  publico     Boolean  @default(false) // Orçamento público (visível sem login)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("orcamentos")
+}
+
+model OrdemServico {
+  id          String   @id @default(cuid())
+  clienteId   String
+  cliente     User     @relation(fields: [clienteId], references: [id])
+  
+  veiculo     String
+  servicos    String[]
+  mecanico    String?
+  status      String   @default("AGUARDANDO") // AGUARDANDO, EM_ANDAMENTO, CONCLUIDO, ENTREGUE
+  prioridade  String   @default("NORMAL") // BAIXA, NORMAL, ALTA, URGENTE
+  
+  dataInicio  DateTime?
+  dataFim     DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ordens_servico")
+}
