@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+export interface IA {
+export interface Relatorio {
 
 interface IA {
   id: string;

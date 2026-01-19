@@ -1,22 +1,22 @@
 import { Controller, Get, Post, Patch, Param } from '@nestjs/common';
-import { IasService } from './ias.service';
+import { IasService, IA, Relatorio } from './ias.service';
 
 @Controller('api/ias')
 export class IasController {
   constructor(private readonly iasService: IasService) {}
 
   @Get()
-  listarTodas() {
+  listarTodas(): { total: number; ativas: number; ias: IA[] } {
     return this.iasService.listarTodas();
   }
 
   @Get('relatorio')
-  obterRelatorio() {
+  obterRelatorio(): { timestamp: string; total_ias: number; ias_ativas: number; relatorios: Relatorio[] } {
     return this.iasService.obterRelatorio();
   }
 
   @Get(':id')
-  buscarPorId(@Param('id') id: string) {
+  buscarPorId(@Param('id') id: string): IA {
     return this.iasService.buscarPorId(id);
   }
 
@@ -26,7 +26,8 @@ export class IasController {
   }
 
   @Patch(':id/status')
-  alternarStatus(@Param('id') id: string) {
+  alternarStatus(@Param('id') id: string): IA {
     return this.iasService.alternarStatus(id);
   }
 }
+
