@@ -3,9 +3,16 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
- const port = process.env.PORT || 3000;
-await app.listen(port, '0.0.0.0');
-console.log(`🚀 Application is running on: http://0.0.0.0:${port}` );
-
+  
+  // Habilitar CORS
+  app.enableCors();
+  
+  // Porta do Railway
+  const port = process.env.PORT || 3000;
+  
+  // Escutar em 0.0.0.0 (importante pro Railway)
+  await app.listen(port, '0.0.0.0');
+  
+  console.log(`🚀 API rodando em: http://0.0.0.0:${port}` );
 }
 bootstrap();
