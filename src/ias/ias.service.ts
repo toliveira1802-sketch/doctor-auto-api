@@ -1,7 +1,6 @@
-export interface IA {
-export interface Relatorio {
+import { Injectable } from '@nestjs/common';
 
-interface IA {
+export interface IA {
   id: string;
   nome: string;
   emoji: string;
@@ -10,7 +9,7 @@ interface IA {
   ultimaExecucao?: string;
 }
 
-interface Relatorio {
+export interface Relatorio {
   ia: string;
   emoji: string;
   tarefa: string;
@@ -104,7 +103,6 @@ export class IasService {
   async executarIA(id: string) {
     const ia = this.buscarPorId(id);
     
-    // Simular execução
     const resultado = {
       ia: ia.nome,
       emoji: ia.emoji,
@@ -113,7 +111,6 @@ export class IasService {
       mensagem: `${ia.nome} executada com sucesso!`,
     };
 
-    // Adicionar ao relatório
     this.relatorios.unshift({
       ia: ia.nome,
       emoji: ia.emoji,
@@ -122,7 +119,6 @@ export class IasService {
       timestamp: new Date().toISOString(),
     });
 
-    // Manter apenas últimos 50 relatórios
     if (this.relatorios.length > 50) {
       this.relatorios = this.relatorios.slice(0, 50);
     }
